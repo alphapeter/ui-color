@@ -13,6 +13,7 @@ import { GitHubRibbon } from '../components/GitHubRibbon';
 import { Layout } from '../components/Layout';
 import { Logo } from '../components/Logo';
 import { SEO } from '../components/Seo';
+import { FormPrecision } from '../components/forms/FormPrecision';
 
 const Container: any = styled.div`
   background-color: ${(props: any) => props.bgColor || '#FFF'};
@@ -40,19 +41,21 @@ const FormsWrapper = styled(Box)`
 const Home = () => {
   const [color, setColor] = React.useState<Color | null>(null);
   const [showHexForm, setShowHexForm] = React.useState<boolean>(true);
+  const [precision, setPrecision] = React.useState<number>(4);
   const hasDarkBg = color && color.isDark();
   const textColor = hasDarkBg ? 'white' : 'inherit';
   const Form = showHexForm ? FormHEX : FormRGB;
+
 
   const renderCodeBlocks = () => {
     if (!color) {
       return null;
     }
     const rgbColor = color.rgb().object();
-    const r = (rgbColor.r / 255).toFixed(2);
-    const g = (rgbColor.g / 255).toFixed(2);
-    const b = (rgbColor.b / 255).toFixed(2);
-    const alpha = color.alpha().toFixed(2);
+    const r = (rgbColor.r / 255).toFixed(precision);
+    const g = (rgbColor.g / 255).toFixed(precision);
+    const b = (rgbColor.b / 255).toFixed(precision);
+    const alpha = color.alpha().toFixed(precision);
 
     return (
       <Flex flexDirection="column">
@@ -67,6 +70,10 @@ const Home = () => {
         <Codeblock
           language="Xamarin (C#)"
           colorString={`new UIColor(red: ${r}f, green: ${g}f, blue: ${b}f, alpha: ${alpha}f)`}
+        />
+        <Codeblock
+          language="RGB"
+          colorString={`${rgbColor.r},${rgbColor.g},${rgbColor.b}`}
         />
       </Flex>
     );
@@ -97,6 +104,7 @@ const Home = () => {
               HEX
             </Heading>
 
+
             <Toggle
               name="toggle-1a"
               leftBackgroundColor={color ? color.string() : 'white'}
@@ -122,6 +130,7 @@ const Home = () => {
 
           <FormsWrapper width={[1, 1, 450]}>
             <Form value={color} onColorChange={setColor} />
+            <FormPrecision value={precision} onValueChange={setPrecision} />
           </FormsWrapper>
 
           {renderCodeBlocks()}
